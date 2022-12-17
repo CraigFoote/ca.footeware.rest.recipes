@@ -4,15 +4,13 @@
 package ca.footeware.rest.recipes.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.footeware.rest.recipes.model.PagingDTO;
 import ca.footeware.rest.recipes.model.Recipe;
+import ca.footeware.rest.recipes.model.Tag;
 import ca.footeware.rest.recipes.repository.RecipeRepository;
 
 /**
@@ -37,19 +37,36 @@ import ca.footeware.rest.recipes.repository.RecipeRepository;
 public class RecipeController {
 
 	private RecipeRepository repo;
-	
-	@Autowired
+
+//	@Autowired
 	public RecipeController(RecipeRepository repo) {
 		this.repo = repo;
+//		createMockData();
 	}
 
-	private List<String> cleanTags(List<String> tags) {
-		List<String> tagList = new ArrayList<>();
-		String tag;
-		for (String string : tags) {
-			tag = string.trim().toLowerCase();
-			if (!tag.isEmpty()) {
-				tagList.add(tag);
+	private void createMockData() {
+		List<Recipe> mockData = new ArrayList<>();
+		mockData.add(new Recipe("name1", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name2", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name3", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name4", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name5", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name6", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name7", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name8", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name9", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name10", "body2", List.of(new Tag("tag1")), null));
+		mockData.add(new Recipe("name11", "body2", List.of(new Tag("tag1")), null));
+		repo.saveAll(mockData);
+	}
+
+	private List<Tag> cleanTags(List<Tag> tags) {
+		List<Tag> tagList = new ArrayList<>();
+		String tag2;
+		for (Tag tag1 : tags) {
+			tag2 = tag1.value().trim().toLowerCase();
+			if (!tag2.isEmpty()) {
+				tagList.add(new Tag(tag2));
 			}
 		}
 		return tagList;
@@ -68,8 +85,10 @@ public class RecipeController {
 	}
 
 	@GetMapping(value = "/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Recipe>> getAllRecipes() {
-		return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
+	public ResponseEntity<PagingDTO> getAllRecipes(@RequestParam int pageNumber, @RequestParam int pageSize) {
+		Page<Recipe> page = repo.findAll(PageRequest.of(pageNumber, pageSize));
+		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/recipes/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,21 +116,31 @@ public class RecipeController {
 	}
 
 	@PostMapping("/recipes/search")
-	public ResponseEntity<List<Recipe>> search(@RequestParam String searchTerm) {
-		String trimmed = searchTerm.trim();
-		// get sets based on name, body and tags
-		Set<Recipe> recipesByName = repo.findByNameContainingIgnoreCase(trimmed);
-		Set<Recipe> recipesByBody = repo.findByBodyContainingIgnoreCase(trimmed);
-		Set<Recipe> recipesByTags = repo.findByTagsContainingIgnoreCase(trimmed);
-		// combine into one set
-		Set<Recipe> collection = new HashSet<>();
-		Stream.of(recipesByName).forEach(collection::addAll);
-		Stream.of(recipesByBody).forEach(collection::addAll);
-		Stream.of(recipesByTags).forEach(collection::addAll);
-		// sort by name
-		Comparator<Recipe> comparator = (o1, o2) -> o1.getName().compareTo(o2.getName());
-		List<Recipe> recipes = new ArrayList<>(collection);
-		Collections.sort(recipes, comparator);
-		return new ResponseEntity<List<Recipe>>(recipes, HttpStatus.OK);
+	public ResponseEntity<PagingDTO> search(@RequestParam String term, @RequestParam int pageNumber,
+			@RequestParam int pageSize) {
+		String trimmed = term.trim();
+		Page<Recipe> result = repo.findByNameContainingIgnoreCaseOrBodyContainingIgnoreCaseOrTagsValueContainingIgnoreCaseOrderByNameAsc(trimmed, trimmed, trimmed,
+				PageRequest.of(pageNumber, pageSize));
+
+		PagingDTO dto = new PagingDTO(pageSize, result.getContent());
+		return new ResponseEntity<PagingDTO>(dto, HttpStatus.OK);
 	}
+
+	@GetMapping("/recipes/tags")
+	public ResponseEntity<List<Tag>> getAllTags() {
+		List<Recipe> allRecipes = repo.findAll();
+		Set<Tag> allTags = new HashSet<>();
+		for (Recipe recipe : allRecipes) {
+			List<Tag> tags = recipe.getTags();
+			allTags.addAll(tags);
+		}
+		List<Tag> allTagsList = new ArrayList<>(allTags);
+		allTagsList.sort((o1, o2) -> o1.value().compareTo(o2.value()));
+		return new ResponseEntity<>(allTagsList, HttpStatus.OK);
+	}
+
+	public List<Recipe> getAllRecipes() {
+		return repo.findAll();
+	}
+
 }

@@ -3,16 +3,18 @@ package ca.footeware.rest.recipes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 
 import ca.footeware.rest.recipes.controller.RecipeController;
+import ca.footeware.rest.recipes.model.PagingDTO;
 import ca.footeware.rest.recipes.model.Recipe;
+import ca.footeware.rest.recipes.model.Tag;
 import ca.footeware.rest.recipes.repository.RecipeRepository;
 
 @SpringBootTest
@@ -25,7 +27,16 @@ class ApplicationTests {
 	@BeforeEach
 	void beforeEach() {
 		controller = new RecipeController(repo);
-		List<Recipe> recipes = controller.getAllRecipes().getBody();
+		clearDB();
+	}
+
+	@AfterEach
+	void aterEach() {
+		clearDB();
+	}
+
+	private void clearDB() {
+		List<Recipe> recipes = controller.getAllRecipes();
 		for (Recipe recipe : recipes) {
 			controller.deleteRecipe(recipe.getId());
 		}
@@ -33,25 +44,26 @@ class ApplicationTests {
 
 	@Test
 	void testSearch() {
-		Recipe recipe = new Recipe("name1", "body1", Arrays.asList("tag1"), null);
-		Recipe created = controller.createRecipe(recipe).getBody();
-		ResponseEntity<List<Recipe>> search = controller.search("name");
-		assertEquals(1, search.getBody().size());
-		search = controller.search("BoDy");
-		assertEquals(1, search.getBody().size());
-		search = controller.search(" tag ");
-		assertEquals(1, search.getBody().size());
-		List<Recipe> recipes = search.getBody();
+		Recipe recipe = new Recipe("name1", "body1", List.of(new Tag("tag1")), null);
+		controller.createRecipe(recipe).getBody();
+		PagingDTO result = controller.search("name1", 0, 10).getBody();
+		assertEquals(1, result.recipes().size());
+		result = controller.search("Bod", 0, 10).getBody();
+		assertEquals(1, result.recipes().size());
+		result = controller.search(" tag ", 0, 10).getBody();
+		assertEquals(1, result.recipes().size());
+		List<Recipe> recipes = result.recipes();
 		String id = recipes.get(0).getId();
 		Recipe recipeById = controller.getRecipeById(id).getBody();
 		assertNotNull(recipeById);
-		recipeById.setName("new");
+		recipeById.setBody("new");
 		Recipe updateReciped = controller.updateRecipe(recipe.getId(), recipeById).getBody();
-		assertEquals("new", updateReciped.getName());
-		// clean up
-		controller.deleteRecipe(created.getId());
-		search = controller.search("name");
-		assertEquals(0, search.getBody().size());
+		assertEquals("new", updateReciped.getBody());
+		recipe = new Recipe("name2", "body2", List.of(new Tag("tag2")), null);
+		controller.createRecipe(recipe).getBody();
+		result = controller.search("name", 0, 10).getBody();
+		assertEquals(2, result.recipes().size());
+		assertEquals("name1", result.recipes().get(0).getName());
 	}
 
 	@Test

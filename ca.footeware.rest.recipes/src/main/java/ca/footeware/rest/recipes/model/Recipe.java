@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
+
 /**
  * @author Footeware.ca
  *
@@ -18,7 +19,7 @@ public class Recipe {
 	private String id;
 	private List<String> images;
 	private String name;
-	private List<String> tags;
+	private List<Tag> tags;
 
 	/**
 	 * Constructor.
@@ -28,7 +29,7 @@ public class Recipe {
 	 * @param tags   {@link List} of {@link String}
 	 * @param images {@link List} of {@link String}, base64-encoded
 	 */
-	public Recipe(String name, String body, List<String> tags, List<String> images) {
+	public Recipe(String name, String body, List<Tag> tags, List<String> images) {
 		this.name = name;
 		this.body = body;
 		this.tags = tags;
@@ -66,7 +67,7 @@ public class Recipe {
 	/**
 	 * @return the tags
 	 */
-	public List<String> getTags() {
+	public List<Tag> getTags() {
 		return tags;
 	}
 
@@ -94,7 +95,7 @@ public class Recipe {
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags(List<String> tags) {
+	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
 }

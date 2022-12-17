@@ -52,7 +52,7 @@ public class WebSecurityConfig {
 	 */
 	@Bean
 	public InMemoryUserDetailsManager userDetailsService() {
-		UserDetails user = User.withUsername("foote").password(passwordEncoder().encode("Bogart1997")).roles("USER")
+		UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
 				.build();
 		return new InMemoryUserDetailsManager(user);
 	}
