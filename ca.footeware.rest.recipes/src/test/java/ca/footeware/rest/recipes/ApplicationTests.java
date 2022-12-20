@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ca.footeware.rest.recipes.controller.RecipeController;
 import ca.footeware.rest.recipes.model.PagingDTO;
 import ca.footeware.rest.recipes.model.Recipe;
-import ca.footeware.rest.recipes.model.Tag;
 import ca.footeware.rest.recipes.repository.RecipeRepository;
 
 @SpringBootTest
@@ -44,8 +43,8 @@ class ApplicationTests {
 
 	@Test
 	void testSearch() {
-		Recipe recipe = new Recipe("name1", "body1", List.of(new Tag("tag1")), null);
-		controller.createRecipe(recipe).getBody();
+		Recipe recipe = new Recipe("name1", "body1", List.of("tag1"), null);
+		controller.createRecipe(recipe);
 		PagingDTO result = controller.search("name1", 0, 10).getBody();
 		assertEquals(1, result.recipes().size());
 		result = controller.search("Bod", 0, 10).getBody();
@@ -59,11 +58,36 @@ class ApplicationTests {
 		recipeById.setBody("new");
 		Recipe updateReciped = controller.updateRecipe(recipe.getId(), recipeById).getBody();
 		assertEquals("new", updateReciped.getBody());
-		recipe = new Recipe("name2", "body2", List.of(new Tag("tag2")), null);
+		recipe = new Recipe("name2", "body2", List.of("tag2"), null);
 		controller.createRecipe(recipe).getBody();
 		result = controller.search("name", 0, 10).getBody();
 		assertEquals(2, result.recipes().size());
 		assertEquals("name1", result.recipes().get(0).getName());
+	}
+
+	@Test
+	void testGetAllTags() {
+		Recipe recipe = new Recipe("name1", "body1", List.of("tag1"), null);
+		controller.createRecipe(recipe);
+		recipe = new Recipe("name2", "body2", List.of("tag1", "tag2"), null);
+		controller.createRecipe(recipe);
+		recipe = new Recipe("name3", "body3", List.of("tag1", "tag2"), null);
+		controller.createRecipe(recipe);
+		recipe = new Recipe("name4", "body4", List.of("tag3"), null);
+		controller.createRecipe(recipe);
+		List<String> tags = controller.getAllTags().getBody();
+		assertEquals(3, tags.size());
+	}
+	
+	@Test
+	void searchByTags() {
+		Recipe recipe = new Recipe("name1", "body1", List.of("tag1"), null);
+		controller.createRecipe(recipe);
+		recipe = new Recipe("name2", "body2", List.of("tag1", "tag2"), null);
+		controller.createRecipe(recipe);
+		PagingDTO dto = controller.searchByTag("tag1", 0, 10).getBody();
+		List<Recipe> recipes = dto.recipes();
+		assertEquals(2, recipes.size());
 	}
 
 	@Test

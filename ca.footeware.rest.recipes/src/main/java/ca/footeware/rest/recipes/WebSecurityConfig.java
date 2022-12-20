@@ -31,7 +31,8 @@ public class WebSecurityConfig {
 	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeHttpRequests().requestMatchers("/recipes/**").hasRole("USER").and().httpBasic();
+		http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers("/recipes/**").hasRole("USER").and()
+				.httpBasic();
 		return http.build();
 	}
 

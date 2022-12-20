@@ -15,6 +15,10 @@ import ca.footeware.rest.recipes.model.Recipe;
  */
 public interface RecipeRepository extends MongoRepository<Recipe, String> {
 
-	Page<Recipe> findByNameContainingIgnoreCaseOrBodyContainingIgnoreCaseOrTagsValueContainingIgnoreCaseOrderByNameAsc(String name, String body, String tags, Pageable pageable);
-	
+	Page<Recipe> findByNameContainingIgnoreCaseOrBodyContainingIgnoreCaseOrTagsContainingIgnoreCaseOrderByNameAsc(
+			String name, String body, String tags, Pageable pageable);
+
+	Page<Recipe> findAll(Pageable pageable);
+
+	Page<Recipe> findByTags(String tags, Pageable pageable);
 }
