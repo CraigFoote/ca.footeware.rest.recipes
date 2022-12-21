@@ -56,13 +56,14 @@ public class WebSecurityConfig {
 				.build();
 		return new InMemoryUserDetailsManager(user);
 	}
-	
+
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/recipes/**").allowedOrigins("*");
+				registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
+						"DELETE", "PUT");
 			}
 		};
 	}
