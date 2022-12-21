@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2016 Footeware.ca
- *******************************************************************************/
 package ca.footeware.rest.recipes;
 
 import org.springframework.context.annotation.Bean;
@@ -12,6 +9,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Specify the URLs to which the current user can access and those that are
@@ -56,5 +55,15 @@ public class WebSecurityConfig {
 		UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
 				.build();
 		return new InMemoryUserDetailsManager(user);
+	}
+	
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/recipes/**").allowedOrigins("*");
+			}
+		};
 	}
 }
