@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +68,7 @@ public class RecipeController {
 
 	@GetMapping(value = "/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagingDTO> getAllRecipes(@RequestParam int pageNumber, @RequestParam int pageSize) {
-		Page<Recipe> page = repo.findAll(PageRequest.of(pageNumber, pageSize));
+		Page<Recipe> page = repo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
