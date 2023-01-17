@@ -21,50 +21,50 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebSecurityConfig {
 
-	/**
-	 * A bean that configures HTTP security.
-	 *
-	 * @param http {@link HttpSecurity}
-	 * @return {@link SecurityFilterChain}
-	 * @throws Exception when the internet falls over.
-	 */
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers("/recipes/**").hasRole("USER").and()
-				.httpBasic();
-		return http.build();
-	}
+    /**
+     * A bean that configures HTTP security.
+     *
+     * @param  {@link HttpSecurity}
+     * @return {@link SecurityFilterChain}
+     * @throws Exception when the internet falls over.
+     */
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers("/recipes/**").hasRole("USER").and()
+                .httpBasic();
+        return http.build();
+    }
 
-	/**
-	 * Use BCrypt for password encoding.
-	 *
-	 * @return {@link PasswordEncoder}
-	 */
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+    /**
+     * Use BCrypt for password encoding.
+     *
+     * @return {@link PasswordEncoder}
+     */
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
-	/**
-	 * Username and password.
-	 *
-	 * @return {@link InMemoryUserDetailsManager}
-	 */
-	@Bean
-	public InMemoryUserDetailsManager userDetailsService() {
-		UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
-				.build();
-		return new InMemoryUserDetailsManager(user);
-	}
+    /**
+     * Username and password.
+     *
+     * @return {@link InMemoryUserDetailsManager}
+     */
+    @Bean
+    InMemoryUserDetailsManager userDetailsService() {
+        UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
+                .build();
+        return new InMemoryUserDetailsManager(user);
+    }
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
-						"DELETE", "PUT");
-			}
-		};
-	}
+    @Bean
+    WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
+                        "DELETE", "PUT");
+            }
+        };
+    }
 }
