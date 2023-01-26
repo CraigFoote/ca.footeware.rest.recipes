@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import ca.footeware.rest.recipes.controller.RecipeController;
 import ca.footeware.rest.recipes.model.PagingDTO;
@@ -78,7 +80,7 @@ class ApplicationTests {
 		List<String> tags = controller.getAllTags().getBody();
 		assertEquals(3, tags.size());
 	}
-	
+
 	@Test
 	void searchByTags() {
 		Recipe recipe = new Recipe("name1", "body1", List.of("tag1"), null);
@@ -92,5 +94,21 @@ class ApplicationTests {
 
 	@Test
 	void contextLoads() {
+	}
+
+	@Test
+	void testGetAllRecipes() {
+		Recipe recipe = new Recipe("name1", "body1", List.of("tag1"), null);
+		controller.createRecipe(recipe);
+		ResponseEntity<PagingDTO> response = controller.getAllRecipes(0, 10);
+		assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+		PagingDTO body = response.getBody();
+		assertEquals(1, body.recipes().size());
+		Recipe recipe2 = body.recipes().get(0);
+		assertEquals("name1", recipe2.getName());
+		assertEquals("body1", recipe2.getBody());
+		assertEquals(1, recipe2.getTags().size());
+		String tag = recipe2.getTags().get(0);
+		assertEquals("tag1", tag);
 	}
 }

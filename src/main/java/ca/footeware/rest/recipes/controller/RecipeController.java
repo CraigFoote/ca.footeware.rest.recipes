@@ -104,7 +104,6 @@ public class RecipeController {
 		Page<Recipe> result = repo
 				.findByNameContainingIgnoreCaseOrBodyContainingIgnoreCaseOrTagsContainingIgnoreCaseOrderByNameAsc(
 						trimmed, trimmed, trimmed, PageRequest.of(pageNumber, pageSize));
-
 		PagingDTO dto = new PagingDTO(result.getTotalElements(), result.getContent());
 		return new ResponseEntity<PagingDTO>(dto, HttpStatus.OK);
 	}
