@@ -4,6 +4,7 @@
 package ca.footeware.rest.recipes.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class RecipeController {
 				tagList.add(tag);
 			}
 		}
+		Collections.sort(tagList);
 		return tagList;
 	}
 
