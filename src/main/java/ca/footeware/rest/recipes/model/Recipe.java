@@ -16,7 +16,7 @@ public class Recipe {
 	private String body;
 	@Id
 	private String id;
-	private List<String> images;
+	private List<String> imageIds;
 	private String name;
 	private List<String> tags;
 
@@ -26,13 +26,13 @@ public class Recipe {
 	 * @param name   {@link String}
 	 * @param body   {@link String}
 	 * @param tags   {@link List} of {@link String}
-	 * @param images {@link List} of {@link String}, base64-encoded
+	 * @param imageIds {@link List} of {@link String}
 	 */
-	public Recipe(String name, String body, List<String> tags, List<String> images) {
+	public Recipe(String name, String body, List<String> tags, List<String> imageIds) {
 		this.name = name;
 		this.body = body;
 		this.tags = tags;
-		this.images = images;
+		this.imageIds = imageIds;
 	}
 
 	/**
@@ -52,8 +52,8 @@ public class Recipe {
 	/**
 	 * @return the images
 	 */
-	public List<String> getImages() {
-		return images;
+	public List<String> getImageIds() {
+		return imageIds;
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class Recipe {
 	/**
 	 * @param images the images to set
 	 */
-	public void setImages(List<String> images) {
-		this.images = images;
+	public void setImageIds(List<String> imageIds) {
+		this.imageIds = imageIds;
 	}
 
 	/**
