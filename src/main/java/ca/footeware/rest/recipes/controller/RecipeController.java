@@ -290,7 +290,7 @@ public class RecipeController {
 	public ResponseEntity<byte[]> getImage(@PathVariable String id) {
 		Optional<RecipeImage> byId = recipeImageRepo.findById(id);
 		if (byId.isPresent()) {
-			byte[] decoded = Base64.getDecoder().decode(byId.get().getImage());
+			byte[] decoded = Base64.getDecoder().decode(byId.get().getImage().substring(23));
 			return new ResponseEntity<>(decoded, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
