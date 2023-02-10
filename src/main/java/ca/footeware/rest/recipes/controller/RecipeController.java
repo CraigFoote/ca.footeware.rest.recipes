@@ -250,7 +250,7 @@ public class RecipeController {
 	@GetMapping(value = "/recipes/search/tags", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagingDTO> searchByTag(@RequestParam String tag, @RequestParam int pageNumber,
 			@RequestParam int pageSize) {
-		Page<Recipe> page = recipeRepo.findByTags(tag, PageRequest.of(pageNumber, pageSize));
+		Page<Recipe> page = recipeRepo.findByTags(tag, PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
