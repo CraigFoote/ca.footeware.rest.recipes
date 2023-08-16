@@ -1,8 +1,14 @@
 package ca.footeware.rest.recipes;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -19,52 +25,51 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Footeware.ca
  */
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-    /**
-     * A bean that configures HTTP security.
-     *
-     * @param  {@link HttpSecurity}
-     * @return {@link SecurityFilterChain}
-     * @throws Exception when the internet falls over.
-     */
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeHttpRequests().requestMatchers("/recipes/**").hasRole("USER").and()
-                .httpBasic();
-        return http.build();
-    }
+	@Bean
+	SecurityFilterChain configure(HttpSecurity http) throws Exception {
+		http.cors(withDefaults()).csrf((csrf) -> csrf.disable())
+				.authorizeHttpRequests(
+						(authz) -> authz.requestMatchers("/recipes/**").hasRole("USER").anyRequest().authenticated())
+				.httpBasic(Customizer.withDefaults())
+				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    /**
-     * Use BCrypt for password encoding.
-     *
-     * @return {@link PasswordEncoder}
-     */
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+		return http.build();
+	}
 
-    /**
-     * Username and password.
-     *
-     * @return {@link InMemoryUserDetailsManager}
-     */
-    @Bean
-    InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+	@Bean
+	WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
+						"DELETE", "PUT");
+			}
+		};
+	}
 
-    @Bean
-    WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
-                        "DELETE", "PUT");
-            }
-        };
-    }
+	/**
+	 * Use BCrypt for password encoding.
+	 *
+	 * @return {@link PasswordEncoder}
+	 */
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	/**
+	 * Username and password.
+	 *
+	 * @return {@link InMemoryUserDetailsManager}
+	 */
+	@Bean
+	InMemoryUserDetailsManager userDetailsService() {
+		UserDetails user = User.withUsername("craig").password(passwordEncoder().encode("chocolate")).roles("USER")
+				.build();
+		return new InMemoryUserDetailsManager(user);
+	}
 }

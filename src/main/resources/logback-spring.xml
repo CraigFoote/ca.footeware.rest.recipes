@@ -30,7 +30,7 @@
 				at most 10GB -->
 			<maxFileSize>50MB</maxFileSize>
 			<maxHistory>7</maxHistory>
-			<totalSizeCap>10GB</totalSizeCap>
+			<totalSizeCap>5GB</totalSizeCap>
 		</rollingPolicy>
 	</appender>
 

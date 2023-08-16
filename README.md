@@ -8,7 +8,7 @@
 --memory-swap="2g" 
 -t rest.recipes:[version]
 
-1. (if mongodb is local) curl -v GET -u craig -i 'http://localhost:9000/recipes?pageNumber=0&pageSize=10'
+1. (if mongodb is local) curl -v -u craig -i 'http://localhost:9000/recipes?pageNumber=0&pageSize=10'
 
 1. docker tag rest.recipes:[version] craigfoote/rest.recipes:[version]
 
@@ -31,4 +31,4 @@
 --memory-swap="2g" 
 -t craigfoote/rest.recipes:latest 
 
-1. curl -v GET -u craig -i 'http://footeware.ca:9000/recipes?pageNumber=0&pageSize=10'
+1. curl -v -u craig -i 'http://footeware.ca:9000/recipes?pageNumber=0&pageSize=10'

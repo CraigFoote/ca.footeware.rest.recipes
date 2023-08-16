@@ -7,6 +7,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-20-openjdk-amd64/
 RUN export JAVA_HOME
 RUN mkdir -p /opt/rest.recipes/logs/
 ARG JAR_FILE
-ADD ${JAR_FILE} /opt/rest.recipes/app.jar
+ADD ${JAR_FILE} /opt/rest.recipes/rest.recipes.jar
 EXPOSE 9000 27017
-ENTRYPOINT ["java","-jar","/opt/rest.recipes/app.jar"]
+ENTRYPOINT ["java","-jar","/opt/rest.recipes/rest.recipes.jar"]
