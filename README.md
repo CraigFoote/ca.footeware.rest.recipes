@@ -41,4 +41,4 @@
 1. cd /opt
 1. sudo chmod 777 -R /opt/data
 1. docker pull mongodb/mongodb-community-server:latest 
-1. docker run --name mongodb -d -p 27017:27017 -v /opt/data/mongodb:/data/db mongodb/mongodb-community-server:latest
+1. docker run --name mongodb -d --restart unless-stopped --memory="1g" --memory-swap="2g" -p 27017:27017 -v /opt/data/mongodb:/data/db mongodb/mongodb-community-server:latest
