@@ -1,44 +1,34 @@
-# Building
-1. mvn clean install to generate the docker image
+<style>
+body {
+	background-color: #2c2c2c;
+}
+h1,h2,h3 {
+	color: #5d85df;
+}
+li {
+	font-family: 'FiraCode Nerd Font Light';
+	font-size: 18px;
+	color: #dddddd;
+}
+code {
+	color: #dbc41c;
+</style>
 
-1. (if mongodb is local) docker run 
---name rest.recipes 
---net host 
---memory="1g" 
---memory-swap="2g" 
--t rest.recipes:[version]
+# Preparation
+1. `docker network create recipes-network`
+1. `sudo mkdir -p /opt/mongodb/data`
+1. `sudo chmod 777 /opt/mongodb/data`
+1. `docker run -d --name mongodb -p 27017:27017 --network recipes-network -v /opt/mongodb/data:/data/db mongo:latest`
+1. populate mongodb using Mongo Compass
 
-1. (if mongodb is local) curl -v -u craig -i 'http://localhost:9000/recipes?pageNumber=0&pageSize=10'
+# Development
+1. `mvn clean package`
+1. `docker run -d --name rest.recipes -p 9000:9000 --network recipes-network -v /opt/rest.recipes/logs:/opt/rest.recipes/logs -t rest.recipes:[version]`
+1. `curl -v -u craig -i 'http://localhost:9000/recipes?pageNumber=0&pageSize=10'`
 
-1. docker tag rest.recipes:[version] craigfoote/rest.recipes:[version]
-
-1. docker push craigfoote/rest.recipes:[version]
-
-1. docker tag rest.recipes:[version] craigfoote/rest.recipes:latest
-
-1. docker push craigfoote/rest.recipes:latest
-
-# Deploying
-
-1. docker pull craigfoote/rest.recipes:latest
-
-1. docker run 
---name rest.recipes
---net host
--d 
---restart unless-stopped 
---memory="1g" 
---memory-swap="2g" 
--t craigfoote/rest.recipes:latest 
-
-1. curl -v -u craig -i 'http://footeware.ca:9000/recipes?pageNumber=0&pageSize=10'
-
-# Mongodb
-1. cd /opt
-1. sudo mkdir data
-1. cd data
-1. sudo mkdir mongodb
-1. cd /opt
-1. sudo chmod 777 -R /opt/data
-1. docker pull mongodb/mongodb-community-server:latest 
-1. docker run --name mongodb -d --restart unless-stopped --memory="1g" --memory-swap="2g" -p 27017:27017 -v /opt/data/mongodb:/data/db mongodb/mongodb-community-server:latest
+# Release
+1. commit changes to git and create tag [version]
+1. `docker tag rest.recipes:[version] craigfoote/rest.recipes:[version]`
+1. `docker push craigfoote/rest.recipes:[version]`
+1. `docker tag rest.recipes:[version] craigfoote/rest.recipes:latest`
+1. `docker push craigfoote/rest.recipes:latest`

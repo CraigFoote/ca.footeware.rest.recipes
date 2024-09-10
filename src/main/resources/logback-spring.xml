@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOG_HOME" value="./logs" />
+	<property name="LOG_HOME" value="/opt/rest.recipes/logs" />
 	<property name="LOG_FILE_NAME" value="rest.recipes" />
 
 	<property name="LOG_PATTERN"
