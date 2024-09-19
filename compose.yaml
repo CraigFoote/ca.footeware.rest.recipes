@@ -10,7 +10,7 @@ services:
       - /opt/rest.recipes/logs:/opt/rest.recipes/logs
 
   mongodb:
-    image: mongo/8.0.0-rc20-noble
+    image: mongo/latest
     container_name: mongodb
     restart: unless-stopped
     ports:
