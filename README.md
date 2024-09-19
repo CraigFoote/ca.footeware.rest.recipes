@@ -18,8 +18,10 @@ code {
 1. `docker network create recipes-network`
 1. `sudo mkdir -p /opt/mongodb/data`
 1. `sudo chmod 777 /opt/mongodb/data`
-1. `docker run -d --name mongodb -p 27017:27017 --network recipes-network -v /opt/mongodb/data:/data/db mongo:latest`
+1. `docker run -d --name mongodb -p 27017:27017 --network recipes-network -v /opt/mongodb/data:/data/db mongo:8.0.0-rc20-noble`
 1. populate mongodb using Mongo Compass
+1. `sudo mkdir -p /opt/mongodb/data`
+1. `sudo chmod -R 777 /opt/rest.recipes/`
 
 # Development
 1. `mvn clean package`

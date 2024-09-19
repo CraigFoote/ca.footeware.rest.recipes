@@ -1,6 +1,6 @@
 services:
   rest_recipes:
-    image: rest.recipes:2.6.0
+    image: rest.recipes:2.6.2
     container_name: rest.recipes
     restart: unless-stopped
     depends_on: 
@@ -10,7 +10,7 @@ services:
       - /opt/rest.recipes/logs:/opt/rest.recipes/logs
 
   mongodb:
-    image: mongodb/mongodb-community-server:latest
+    image: mongo/8.0.0-rc20-noble
     container_name: mongodb
     restart: unless-stopped
     ports:
