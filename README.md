@@ -1,23 +1,3 @@
-<style>
-body {
-	background-color: #2c2c2c;
-}
-h1,h2,h3 {
-	color: #5d85df;
-}
-li {
-	font-family: 'FiraCode Nerd Font Light';
-	font-size: 18px;
-	color: #dddddd;
-}
-code {
-	color: #dbc41c;
-}
-a {
-	color: #0da6fa;
-}
-</style>
-
 # Preparation
 1. `docker network create recipes-network`
 1. `sudo mkdir -p /opt/mongodb/data`
