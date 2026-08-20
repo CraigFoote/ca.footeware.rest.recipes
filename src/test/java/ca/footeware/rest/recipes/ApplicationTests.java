@@ -37,7 +37,7 @@ class ApplicationTests {
 	}
 
 	@AfterEach
-	void aterEach() {
+	void afterEach() {
 		clearDB();
 	}
 
@@ -123,7 +123,7 @@ class ApplicationTests {
 	void testGetAllRecipes() {
 		RecipeDTO recipeDTO = new RecipeDTO("1", "name1", "body1", List.of("tag1"), Collections.emptyList());
 		controller.createRecipe(recipeDTO);
-		ResponseEntity<PagingDTO> response = controller.getAllRecipes(0, 10);
+		ResponseEntity<PagingDTO> response = controller.getRecipes();
 		assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
 		PagingDTO body = response.getBody();
 		assertEquals(1, body.recipes().size());

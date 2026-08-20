@@ -133,14 +133,27 @@ public class RecipeController {
 	}
 
 	/**
-	 * Get all recipes, without images.
+	 * Get all recipes, without images, by page index 0 and page size 10.
 	 * 
-	 * @param pageNumber int
+	 * @return {@link ResponseEntity} with {@link PagingDTO}
+	 */
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PagingDTO> getRecipes() {
+		return this.getAllRecipesPage(0, 10);
+	}
+
+	/**
+	 * Get all recipes, without images at provided zero-based page index and
+	 * provided page size.
+	 * 
+	 * @param pageNumber int zero-based
 	 * @param pageSize   int
 	 * @return {@link ResponseEntity} with {@link PagingDTO}
 	 */
 	@GetMapping(value = "/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PagingDTO> getAllRecipes(@RequestParam int pageNumber, @RequestParam int pageSize) {
+	public ResponseEntity<PagingDTO> getAllRecipesPage(
+			@RequestParam(required = false, defaultValue = "0") int pageNumber,
+			@RequestParam(required = false, defaultValue = "10") int pageSize) {
 		Page<Recipe> page = recipeRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -250,7 +263,8 @@ public class RecipeController {
 	@GetMapping(value = "/recipes/search/tags", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagingDTO> searchByTag(@RequestParam String tag, @RequestParam int pageNumber,
 			@RequestParam int pageSize) {
-		Page<Recipe> page = recipeRepo.findByTags(tag, PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
+		Page<Recipe> page = recipeRepo.findByTags(tag,
+				PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
@@ -297,7 +311,7 @@ public class RecipeController {
 	}
 
 	/**
-	 * Get all recipes, without images. FOR TESTING ONLY.
+	 * Get all recipes, without images. TODO FOR TESTING ONLY.
 	 * 
 	 * @return {@link List} of {@link Recipe}
 	 */
