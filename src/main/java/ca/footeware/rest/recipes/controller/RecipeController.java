@@ -154,7 +154,7 @@ public class RecipeController {
 	public ResponseEntity<PagingDTO> getAllRecipesPage(
 			@RequestParam(required = false, defaultValue = "0") int pageNumber,
 			@RequestParam(required = false, defaultValue = "10") int pageSize) {
-		Page<Recipe> page = recipeRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
+		Page<Recipe> page = recipeRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Recipe::getName).ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
@@ -264,7 +264,7 @@ public class RecipeController {
 	public ResponseEntity<PagingDTO> searchByTag(@RequestParam String tag, @RequestParam int pageNumber,
 			@RequestParam int pageSize) {
 		Page<Recipe> page = recipeRepo.findByTags(tag,
-				PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending()));
+				PageRequest.of(pageNumber, pageSize, Sort.by(Recipe::getName).ascending()));
 		PagingDTO dto = new PagingDTO(page.getTotalElements(), page.getContent());
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
