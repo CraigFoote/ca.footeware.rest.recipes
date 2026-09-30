@@ -28,8 +28,10 @@ public class WebSecurityConfig {
 	 */
 	@Bean
 	SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		http.cors(withDefaults()).csrf((csrf) -> csrf.disable())
-				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http
+		.cors(withDefaults())
+		.csrf((csrf) -> csrf.disable())
+		.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		return http.build();
 	}
@@ -39,8 +41,10 @@ public class WebSecurityConfig {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/recipes/**").allowedOrigins("*").allowedMethods("GET", "POST", "OPTIONS",
-						"DELETE", "PUT", "HEAD");
+				registry
+				.addMapping("/recipes/**")
+				.allowedOrigins("*")
+				.allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT", "HEAD");
 			}
 		};
 	}

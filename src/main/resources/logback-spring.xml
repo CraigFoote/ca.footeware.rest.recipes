@@ -14,20 +14,16 @@
 		</encoder>
 	</appender>
 
-	<appender name="LOGFILE"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_HOME}/${LOG_FILE_NAME}.log</file>
-		<encoder
-			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>${LOG_PATTERN}</Pattern>
 		</encoder>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- roll-over daily -->
-			<fileNamePattern>${LOG_HOME}/archived/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log
-			</fileNamePattern>
-			<!-- each file should be at most 50MB, keep 7 days worth of history, but 
-				at most 10GB -->
+			<fileNamePattern>${LOG_HOME}/archived/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<!-- each file should be at most 50MB, keep 7 days worth of history, but at most 5GB -->
 			<maxFileSize>50MB</maxFileSize>
 			<maxHistory>7</maxHistory>
 			<totalSizeCap>5GB</totalSizeCap>
