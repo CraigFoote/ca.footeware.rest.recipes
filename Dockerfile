@@ -1,4 +1,4 @@
-FROM eclipse-temurin:27.0.1.1_4-jre-ubi10-minimal
+FROM eclipse-temurin:27-jre
 ARG JAR_FILE
 ARG JAR_NAME
 ADD ${JAR_FILE} /opt/rest.recipes/${JAR_NAME}
